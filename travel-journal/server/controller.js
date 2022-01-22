@@ -1,17 +1,33 @@
+const config = require('dotenv')
+const { Sequelize } = require('sequelize')
 
+const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+            rejectUnauthorized: false
+        }
+    }
+})
 
 module.exports = {
     seed: (req, res) => {
         sequelize.query(`
-            drop table if exists cities;
-            drop table if exists countries;
+            DROP TABLE IF EXISTS cities;
+            DROP TABLE IF EXISTS countries;
 
-            create table countries (
-                country_id serial primary key, 
-                name varchar
+            CREATE TABLE countries (
+                country_id SERIAL PRIMARY KEY, 
+                name VARCHAR
             );
 
-            *****YOUR CODE HERE*****
+            CREATE TABLE cities (
+                city_id SERIAL PRIMARY KEY,
+                name VARCHAR(60),
+                rating INT,
+                country_id INT,
+                FOREIGN KEY (country_id) REFERENCES countries(country_id)
+            );
 
             insert into countries (name)
             values ('Afghanistan'),
