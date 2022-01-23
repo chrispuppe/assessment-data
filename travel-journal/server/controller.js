@@ -240,7 +240,7 @@ module.exports = {
 
     createCity: (req, res) => {
         console.log(req.body)
-        const { name, rating, countryId  } = req.body
+        const { name, rating, countryId } = req.body
         let addcity = 'INSERT INTO cities (name, rating, country_id) VALUES ' 
             + `('${name}', ${rating}, ${countryId});`
         // console.log(addcity)
@@ -256,11 +256,21 @@ module.exports = {
             `SELECT
             cities.name AS city,
             countries.name AS country,
-            cities.rating
+            cities.rating,
+            cities.city_id
             FROM cities
             INNER JOIN countries
             ON cities.country_id = countries.country_id;
         `).then(dbRes => res.status(200).send(dbRes[0])
         ).catch(err => console.log('error getting cities from DB', err))
+    },
+
+    deleteCity: (req, res) => {
+        // console.log(req.params)
+        const { id } = req.params
+        
+        sequelize.query(
+            `DELETE FROM cities WHERE city_id = ${id};`
+        ).then(dbRes => res.status(200).send(dbRes[0]))
     }
 }
