@@ -240,9 +240,9 @@ module.exports = {
 
     createCity: (req, res) => {
         console.log(req.body)
-        const { name, rating, country_id  } = req.body
+        const { name, rating, countryId  } = req.body
         let addcity = 'INSERT INTO cities (name, rating, country_id) VALUES ' 
-            + `('${name}', ${rating}, 1);`
+            + `('${name}', ${rating}, ${countryId});`
         // console.log(addcity)
         sequelize.query(addcity)
         .then(dbRes => {
@@ -255,7 +255,8 @@ module.exports = {
         sequelize.query(
             `SELECT
             cities.name AS city,
-            countries.name AS country
+            countries.name AS country,
+            cities.rating
             FROM cities
             INNER JOIN countries
             ON cities.country_id = countries.country_id;
