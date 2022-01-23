@@ -232,10 +232,34 @@ module.exports = {
     },
     
     getCountries: (req, res) => {
-        const results = sequelize.query(
+        sequelize.query(
             'SELECT * FROM countries;'
-        )
-        results.then(dbRes => res.status(200).send(dbRes[0])
+        ).then(dbRes => res.status(200).send(dbRes[0])
         ).catch(err => console.log('error getting countries from DB', err))
     },
+
+    createCity: (req, res) => {
+        console.log(req.body)
+        const { name, rating, country_id  } = req.body
+        let addcity = 'INSERT INTO cities (name, rating, country_id) VALUES ' 
+            + `('${name}', ${rating}, 1);`
+        // console.log(addcity)
+        sequelize.query(addcity)
+        .then(dbRes => {
+            res.status(200).send(dbRes[0])
+            console.log(dbRes[0])
+        }).catch(err => console.log('error putting city in DB', err))
+    },
+
+    getCities: (req, res) => {
+        sequelize.query(
+            `SELECT
+            cities.name AS city,
+            countries.name AS country
+            FROM cities
+            INNER JOIN countries
+            ON cities.country_id = countries.country_id;
+        `).then(dbRes => res.status(200).send(dbRes[0])
+        ).catch(err => console.log('error getting cities from DB', err))
+    }
 }
