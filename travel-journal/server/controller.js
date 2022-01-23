@@ -12,8 +12,8 @@ const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
 
 module.exports = {
     seed: (req, res) => {
-        sequelize.query(`
-            DROP TABLE IF EXISTS cities;
+        sequelize.query(
+            `DROP TABLE IF EXISTS cities;
             DROP TABLE IF EXISTS countries;
 
             CREATE TABLE countries (
@@ -225,6 +225,12 @@ module.exports = {
             ('Yemen'),
             ('Zambia'),
             ('Zimbabwe');
+
+            INSERT INTO cities (name, rating, country_id)
+            values ('New York', 5, 187),
+            ('Columbus', 3, 187),
+            ('Los Angeles', 4, 187),
+            ('Dalas', 5, 187);
         `).then(() => {
             console.log('DB seeded!')
             res.sendStatus(200)
@@ -260,7 +266,8 @@ module.exports = {
             cities.city_id
             FROM cities
             INNER JOIN countries
-            ON cities.country_id = countries.country_id;
+            ON cities.country_id = countries.country_id
+            ORDER BY cities.rating DESC;
         `).then(dbRes => res.status(200).send(dbRes[0])
         ).catch(err => console.log('error getting cities from DB', err))
     },
